@@ -28,29 +28,12 @@
                     @csrf
 
                     <div class="flex flex-col items-center">
-                        <label for="name" class="w-full max-w-3xl mx-auto">
-                            <p class="text-lg font-normal">タスク名：</p>
+                        <label class="w-full max-w-3xl mx-auto">
+                            <span class="block text-sm font-medium text-gray-700">タスク名</span>
                             <input
                                 class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                                placeholder="洗濯物をする..." id="name" type="text" name="task_name" />
-
+                                placeholder="洗濯物をする..." type="text" name="task_name" />
                             @error('task_name')
-                            <div class="mt-3">
-                                <p class="text-red-500">
-                                    {{ $message }}
-                                </p>
-                            </div>
-                            @enderror
-                        </label>
-
-                        <label for="priority" class="w-full max-w-3xl mx-auto">
-                            <p class="text-lg font-normal">優先順位：</p>
-                            <select class="border border-slate-300 rounded-md" name="priority" id="priority">
-                                <option value="0">★</option>
-                                <option value="1">★★</option>
-                                <option value="2">★★★</option>
-                            </select>
-                            @error('priority')
                                 <div class="mt-3">
                                     <p class="text-red-500">
                                         {{ $message }}
@@ -59,17 +42,24 @@
                             @enderror
                         </label>
 
-                        <label for="user_id" class="w-full max-w-3xl mx-auto">
-                            <p class="text-lg font-normal">ユーザー：</p>
-                            <select class="border border-slate-300 rounded-md" name="user_id" id="user_id">
-                                <option value="">ユーザーを選択</option> <!-- 空の選択肢を追加 -->
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
+                        <!-- 優先順位選択 -->
+                        <label for="priority" class="w-full max-w-3xl mx-auto">
+                            <span class="block text-sm font-medium text-gray-700">優先順位</span>
+                            <select
+                                class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                                name="priority" id="priority">
+                                <option value="{{ \App\Models\Task::PRIORITY_LOW }}">★ - 低</option>
+                                <option value="{{ \App\Models\Task::PRIORITY_MEDIUM }}">★★ - 中</option>
+                                <option value="{{ \App\Models\Task::PRIORITY_HIGH }}">★★★ - 高</option>
                             </select>
-                            @error('user_id')
+                        </label>
+
+                        <label class="w-full max-w-3xl mx-auto">
+                            <span class="block text-sm font-medium text-gray-700">ユーザー名</span>
+                            <input
+                                class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                                placeholder=" ..." type="text" name="username" />
+                            @error('username')
                                 <div class="mt-3">
                                     <p class="text-red-500">
                                         {{ $message }}
@@ -84,6 +74,7 @@
                     </div>
 
                 </form>
+
                 @if ($tasks->isNotEmpty())
                     <div class="max-w-7xl mx-auto mt-20">
                         <div class="inline-block min-w-full py-2 align-middle">
@@ -91,14 +82,17 @@
                                 <table class="min-w-full divide-y divide-gray-300">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col"
+                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                                                 タスク
                                             </th>
-                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col"
+                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                                                 優先順位
                                             </th>
-                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
-                                                ユーザー
+                                            <th scope="col"
+                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                                                ユーザー名
                                             </th>
                                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                 <span class="sr-only">Actions</span>
@@ -115,22 +109,18 @@
                                                 </td>
                                                 <td class="px-3 py-4 text-sm text-gray-500">
                                                     <div>
-                                                        @switch($item->priority)
-                                                            @case(0)
-                                                                ★
-                                                                @break
-                                                            @case(1)
-                                                                ★★
-                                                                @break
-                                                            @case(2)
-                                                                ★★★
-                                                                @break
-                                                        @endswitch
+                                                        @if ($item->priority == \App\Models\Task::PRIORITY_LOW)
+                                                            ★
+                                                        @elseif ($item->priority == \App\Models\Task::PRIORITY_MEDIUM)
+                                                            ★★
+                                                        @elseif ($item->priority == \App\Models\Task::PRIORITY_HIGH)
+                                                            ★★★
+                                                        @endif
                                                     </div>
                                                 </td>
                                                 <td class="px-3 py-4 text-sm text-gray-500">
                                                     <div>
-                                                        {{ $item->user ? $item->user->name : '未設定' }}
+                                                        {{ $item->username }}
                                                     </div>
                                                 </td>
                                                 <td class="p-0 text-right text-sm font-medium">
@@ -142,6 +132,7 @@
                                                                 role="menuitem" tabindex="-1">
                                                                 @csrf
                                                                 @method('PUT')
+
                                                                 <input type="hidden" name="status" value="{{$item->status}}">
                                                                 <button type="submit"
                                                                     class="bg-emerald-700 py-4 w-20 text-white md:hover:bg-emerald-800 transition-colors">完了</button>
@@ -172,6 +163,7 @@
                         </div>
                     </div>
                 @endif
+
             </div>
         </div>
     </main>
@@ -194,4 +186,3 @@
 </body>
 
 </html>
-
