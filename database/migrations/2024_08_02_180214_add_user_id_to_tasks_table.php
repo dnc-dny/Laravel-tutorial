@@ -14,16 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            // すでに user_id カラムが存在する場合は追加しない
-            if (!Schema::hasColumn('tasks', 'user_id')) {
-                $table->unsignedBigInteger('user_id')->nullable()->after('id');
-
-                // 外部キー制約の設定
-                $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users')
-                    ->onDelete('set null');
-            }
+            $table->unsignedBigInteger('user_id')->nullable()->after('id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
@@ -35,10 +27,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            if (Schema::hasColumn('tasks', 'user_id')) {
-                $table->dropForeign(['user_id']); // 外部キー制約を削除
-                $table->dropColumn('user_id');    // カラムを削除
-            }
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
         });
     }
 };

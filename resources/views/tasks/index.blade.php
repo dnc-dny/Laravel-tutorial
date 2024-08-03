@@ -59,6 +59,24 @@
                             @enderror
                         </label>
 
+                        <label for="user_id" class="w-full max-w-3xl mx-auto">
+                            <p class="text-lg font-normal">ユーザー：</p>
+                            <select class="border border-slate-300 rounded-md" name="user_id" id="user_id">
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('user_id')
+                                <div class="mt-3">
+                                    <p class="text-red-500">
+                                        {{ $message }}
+                                    </p>
+                                </div>
+                            @enderror
+                        </label>
+
                         <button type="submit" class="mt-8 p-4 bg-slate-800 text-white w-full max-w-xs hover:bg-slate-900 transition-colors">
                             追加する
                         </button>
@@ -77,6 +95,9 @@
                                             </th>
                                             <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                                                 優先順位
+                                            </th>
+                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                                                ユーザー
                                             </th>
                                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                 <span class="sr-only">Actions</span>
@@ -104,6 +125,11 @@
                                                                 ★★★
                                                                 @break
                                                         @endswitch
+                                                    </div>
+                                                </td>
+                                                <td class="px-3 py-4 text-sm text-gray-500">
+                                                    <div>
+                                                        {{ $item->user ? $item->user->name : '未設定' }}
                                                     </div>
                                                 </td>
                                                 <td class="p-0 text-right text-sm font-medium">

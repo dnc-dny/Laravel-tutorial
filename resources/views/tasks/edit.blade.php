@@ -69,6 +69,20 @@
                             </select>
                         </label>
 
+                        <label for="user_id" class="w-full max-w-3xl mx-auto mt-8">
+                            <p class="text-lg font-normal">～ユーザー～</p>
+                            <select
+                                class="block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                                name="user_id" id="user_id">
+                                <option value="">選択しない</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id', $task->user_id ?? '') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </label>
+
                         <div class="mt-8 w-full flex items-center justify-center gap-10">
                             <a href="/tasks" class="block shrink-0 underline underline-offset-2">
                                 戻る

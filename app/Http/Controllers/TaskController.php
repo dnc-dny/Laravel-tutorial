@@ -17,9 +17,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::where('status', false)->get();
+        $tasks = Task::with('user')->where('status', false)->get(); // ユーザー情報を含むタスクを取得
+        $users = User::all(); // 全ユーザーを取得
 
-        return view('tasks.index', compact('tasks')); //return view('tasks.index', ['tasks' => $tasks]);でもOK
+        return view('tasks.index', compact('tasks', 'users')); // ビューにタスクとユーザー情報を渡す
     }
 
     /**
@@ -29,7 +30,8 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::all();
+        return view('tasks.create', compact('users'));
     }
 
     /**
@@ -44,9 +46,15 @@ class TaskController extends Controller
         $rules = [
             'task_name' => 'required|max:100',
             'priority' => 'required|integer|min:0|max:2',
+            'user_id' => 'nullable|exists:users,id', // ユーザーIDのバリデーション
         ];
 
-        $messages = ['required' => '必須項目です', 'max' => '100文字以下にしてください。'];
+        $messages = [
+            'required' => '必須項目です',
+            'max' => '最大 :max 文字までです',
+            'min' => '最小 :min の値が必要です',
+            'integer' => '整数値を入力してください',
+        ];
 
         Validator::make($request->all(), $rules, $messages)->validate();
 
@@ -56,6 +64,7 @@ class TaskController extends Controller
           //モデル->カラム名 = 値 で、データを割り当てる
         $task->name = $request->input('task_name');
         $task->priority = $request->input('priority');
+        $task->user_id = $request->input('user_id');
 
           //データベースに保存
         $task->save();
@@ -89,8 +98,9 @@ class TaskController extends Controller
     /**
      * タスクの編集フォームを表示
      */
-        $task = Task::find($id);
-        return view('tasks.edit', compact('task'));
+        $task = Task::findOrFail($id);
+        $users = User::all();
+        return view('tasks.edit', compact('task', 'users'));
     }
 
     /**
@@ -119,6 +129,7 @@ class TaskController extends Controller
             $rules = [
                 'task_name' => 'required|max:100',
                 'priority' => 'required|integer|min:0|max:2',
+                'user_id' => 'nullable|exists:users,id',
             ];
 
             $messages = [
@@ -138,6 +149,7 @@ class TaskController extends Controller
             $task->update([
                 'name' => $request->input('task_name'),
                 'priority' => $request->input('priority'),
+                'user_id' => $request->input('user_id'),
             ]);
         }
 
