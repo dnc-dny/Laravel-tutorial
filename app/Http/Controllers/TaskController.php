@@ -102,34 +102,46 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // バリデーションルールとメッセージ
-        $rules = [
-            'task_name' => 'required|max:100',
-            'priority' => 'required|integer|min:0|max:2',
-        ];
+        // ステータスが存在するかどうかで処理を分岐
+        if ($request->has('status')) {
+            // 「完了」ボタンを押したときの処理
+            $task = Task::findOrFail($id);
 
-        $messages = [
-            'required' => '必須項目です',
-            'max' => '最大 :max 文字までです',
-            'min' => '最小 :min の値が必要です',
-            'integer' => '整数値を入力してください',
-        ];
+            // ステータスを完了に更新
+            $task->status = true; //true:完了、false:未完了
 
-        // バリデーションの実行
-        $validatedData = $request->validate($rules, $messages);
+            // データベースに保存
+            $task->save();
+        } else {
+            // 「編集する」ボタンを押したときの処理
 
-        // 該当のタスクを検索
-        $task = Task::findOrFail($id);
+            // バリデーションルールとメッセージ
+            $rules = [
+                'task_name' => 'required|max:100',
+                'priority' => 'required|integer|min:0|max:2',
+            ];
 
-        // データの更新
-        $task->update([
-            'name' => $request->input('task_name'),
-            'priority' => $request->input('priority'),
-            'status' => $request->has('status') ? true : $task->status, // ステータスの更新
-        ]);
+            $messages = [
+                'required' => '必須項目です',
+                'max' => '最大 :max 文字までです',
+                'min' => '最小 :min の値が必要です',
+                'integer' => '整数値を入力してください',
+            ];
 
+            // バリデーションの実行
+            $validatedData = $request->validate($rules, $messages);
 
-        // リダイレクト
+            // 該当のタスクを検索
+            $task = Task::findOrFail($id);
+
+            // データの更新
+            $task->update([
+                'name' => $request->input('task_name'),
+                'priority' => $request->input('priority'),
+            ]);
+        }
+
+        //リダイレクト
         return redirect()->route('tasks.index')->with('success', 'タスクが更新されました！');
     }
 
