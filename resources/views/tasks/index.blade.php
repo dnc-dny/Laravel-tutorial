@@ -28,10 +28,11 @@
                     @csrf
 
                     <div class="flex flex-col items-center">
-                        <label class="w-full max-w-3xl mx-auto">
+                        <label for="name" class="w-full max-w-3xl mx-auto">
+                            <p class="text-lg font-normal">タスク名：</p>
                             <input
                                 class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-                                placeholder="洗濯物をする..." type="text" name="task_name" />
+                                placeholder="洗濯物をする..." id="name" type="text" name="task_name" />
 
                             @error('task_name')
                             <div class="mt-3">
@@ -39,6 +40,22 @@
                                     {{ $message }}
                                 </p>
                             </div>
+                            @enderror
+                        </label>
+
+                        <label for="priority" class="w-full max-w-3xl mx-auto">
+                            <p class="text-lg font-normal">優先順位：</p>
+                            <select class="border border-slate-300 rounded-md" name="priority" id="priority">
+                                <option value="0">★</option>
+                                <option value="1">★★</option>
+                                <option value="2">★★★</option>
+                            </select>
+                            @error('priority')
+                                <div class="mt-3">
+                                    <p class="text-red-500">
+                                        {{ $message }}
+                                    </p>
+                                </div>
                             @enderror
                         </label>
 
@@ -55,9 +72,12 @@
                                 <table class="min-w-full divide-y divide-gray-300">
                                     <thead class="bg-gray-50">
                                         <tr>
-                                            <th scope="col"
-                                                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
-                                                タスク</th>
+                                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
+                                                タスク
+                                            </th>
+                                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                                優先順位
+                                            </th>
                                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                                 <span class="sr-only">Actions</span>
                                             </th>
@@ -69,6 +89,21 @@
                                                 <td class="px-3 py-4 text-sm text-gray-500">
                                                     <div>
                                                         {{ $item->name }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-3 py-4 text-sm text-gray-500">
+                                                    <div>
+                                                        @switch($item->priority)
+                                                            @case(0)
+                                                                ★
+                                                                @break
+                                                            @case(1)
+                                                                ★★
+                                                                @break
+                                                            @case(2)
+                                                                ★★★
+                                                                @break
+                                                        @endswitch
                                                     </div>
                                                 </td>
                                                 <td class="p-0 text-right text-sm font-medium">

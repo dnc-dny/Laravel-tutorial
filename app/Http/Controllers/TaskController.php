@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+
 
 class TaskController extends Controller
 {
@@ -17,7 +19,7 @@ class TaskController extends Controller
     {
         $tasks = Task::where('status', false)->get();
 
-        return view('tasks.index', compact('tasks'));
+        return view('tasks.index', compact('tasks')); //return view('tasks.index', ['tasks' => $tasks]);でもOK
     }
 
     /**
@@ -38,25 +40,28 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+
         $rules = [
             'task_name' => 'required|max:100',
+            'priority' => 'required|integer|min:0|max:2',
         ];
 
         $messages = ['required' => '必須項目です', 'max' => '100文字以下にしてください。'];
 
         Validator::make($request->all(), $rules, $messages)->validate();
 
-        //モデルをインスタンス化
+          //モデルをインスタンス化
         $task = new Task;
 
-        //モデル->カラム名 = 値 で、データを割り当てる
+          //モデル->カラム名 = 値 で、データを割り当てる
         $task->name = $request->input('task_name');
+        $task->priority = $request->input('priority');
 
-        //データベースに保存
+          //データベースに保存
         $task->save();
 
-        //リダイレクト
-        return redirect('/tasks');
+          //リダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが作成されました！');
     }
 
     /**
@@ -65,9 +70,12 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Task $task)
     {
-        //
+    /**
+     * タスクの詳細を表示
+     */
+        return view('tasks.show', compact('task'));
     }
 
     /**
@@ -78,6 +86,9 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
+    /**
+     * タスクの編集フォームを表示
+     */
         $task = Task::find($id);
         return view('tasks.edit', compact('task'));
     }
@@ -91,40 +102,35 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //「編集する」ボタンをおしたとき
-        if ($request->status === null) {
-            $rules = [
-                'task_name' => 'required|max:100',
-            ];
+        // バリデーションルールとメッセージ
+        $rules = [
+            'task_name' => 'required|max:100',
+            'priority' => 'required|integer|min:0|max:2',
+        ];
 
-            $messages = ['required' => '必須項目です', 'max' => '100文字以下にしてください。'];
+        $messages = [
+            'required' => '必須項目です',
+            'max' => '最大 :max 文字までです',
+            'min' => '最小 :min の値が必要です',
+            'integer' => '整数値を入力してください',
+        ];
 
-            Validator::make($request->all(), $rules, $messages)->validate();
+        // バリデーションの実行
+        $validatedData = $request->validate($rules, $messages);
+
+        // 該当のタスクを検索
+        $task = Task::findOrFail($id);
+
+        // データの更新
+        $task->update([
+            'name' => $request->input('task_name'),
+            'priority' => $request->input('priority'),
+            'status' => $request->has('status') ? true : $task->status, // ステータスの更新
+        ]);
 
 
-            //該当のタスクを検索
-            $task = Task::find($id);
-
-            //モデル->カラム名 = 値 で、データを割り当てる
-            $task->name = $request->input('task_name');
-
-            //データベースに保存
-            $task->save();
-        } else {
-            //「完了」ボタンを押したとき
-
-            //該当のタスクを検索
-            $task = Task::find($id);
-
-            //モデル->カラム名 = 値 で、データを割り当てる
-            $task->status = true; //true:完了、false:未完了
-
-            //データベースに保存
-            $task->save();
-        }
-
-        //リダイレクト
-        return redirect('/tasks');
+        // リダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが更新されました！');
     }
 
     /**

@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'name', 'priority',
+    ];
+
+    /**
+     * リレーション: タスクを担当するユーザー
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
