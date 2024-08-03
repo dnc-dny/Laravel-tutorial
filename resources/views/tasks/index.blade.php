@@ -62,6 +62,7 @@
                         <label for="user_id" class="w-full max-w-3xl mx-auto">
                             <p class="text-lg font-normal">ユーザー：</p>
                             <select class="border border-slate-300 rounded-md" name="user_id" id="user_id">
+                                <option value="">ユーザーを選択</option> <!-- 空の選択肢を追加 -->
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}

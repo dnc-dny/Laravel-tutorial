@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,5 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TodoListSeeder::class
         ]);
+
+         // ユーザーを3人追加
+        User::factory()->count(3)->create();
     }
 }
