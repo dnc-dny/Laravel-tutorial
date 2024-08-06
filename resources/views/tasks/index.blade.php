@@ -23,6 +23,7 @@
     <main class="grow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             <div class="py-[100px]">
+
                 <p class="text-2xl font-bold text-center">今日は何する？</p>
                 <form action="/tasks" method="post" class="mt-10">
                     @csrf
@@ -54,6 +55,7 @@
                             </select>
                         </label>
 
+                        <!-- ユーザー名入力 -->
                         <label class="w-full max-w-3xl mx-auto">
                             <span class="block text-sm font-medium text-gray-700">ユーザー名</span>
                             <input
@@ -119,9 +121,10 @@
                                                     </div>
                                                 </td>
                                                 <td class="px-3 py-4 text-sm text-gray-500">
-                                                    <div>
-                                                        {{ $item->username }}
-                                                    </div>
+                                                    <a href="{{ route('tasks.filterByUsername', ['username' => $item->username]) }}"
+                                                        class="text-sky-600 underline hover:text-sky-800">
+                                                            {{ $item->username }}
+                                                    </a>
                                                 </td>
                                                 <td class="p-0 text-right text-sm font-medium">
                                                     <div class="flex justify-end">

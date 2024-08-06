@@ -57,7 +57,7 @@
                             </label>
 
                             <!-- ユーザー名入力 -->
-                            <label class="w-full max-w-3xl mx-auto">
+                            <label for="username" class="w-full max-w-3xl mx-auto">
                                 <span class="block text-sm font-medium text-gray-700">ユーザー名</span>
                                 <input
                                     class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-4 pl-4 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"

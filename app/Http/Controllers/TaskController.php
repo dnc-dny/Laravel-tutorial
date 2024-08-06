@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 一覧を表示する
      *
      * @return \Illuminate\Http\Response
      */
@@ -22,7 +22,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 新しいリソースの作成フォームを表示する
      *
      * @return \Illuminate\Http\Response
      */
@@ -32,7 +32,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新しいリソースをストレージに保存する
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -72,7 +72,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 指定されたリソースを表示する
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -83,7 +83,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 指定されたリソースの編集フォームを表示する
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -95,7 +95,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 指定されたリソースをストレージで更新する
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -147,7 +147,7 @@ class TaskController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 指定されたリソースをストレージから削除する
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -157,5 +157,18 @@ class TaskController extends Controller
         Task::find($id)->delete();
 
         return redirect('/tasks');
+    }
+
+    /**
+     * ユーザー名でフィルタリングしたタスクを表示する
+     *
+     * @param  string  $username
+     * @return \Illuminate\Http\Response
+     */
+    public function filterByUsername($username)
+    {
+        $tasks = Task::where('username', $username)->get();
+
+        return view('tasks.filterByUsername', ['tasks' => $tasks, 'username' => $username]);
     }
 }

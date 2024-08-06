@@ -23,5 +23,7 @@ Route::get('/list', [TodoListController::class, 'index']);
 
 Route::resource('tasks', TaskController::class);
 
+Route::get('tasks/user/{username}', [TaskController::class, 'filterByUsername'])->name('tasks.filterByUsername');
+
 
 
