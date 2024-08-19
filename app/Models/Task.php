@@ -9,7 +9,7 @@ class Task extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'priority', 'status',
+        'name', 'priority', 'status', 'username',
     ];
 
     // 優先順位を表現するための定数
@@ -18,7 +18,7 @@ class Task extends Model
     const PRIORITY_HIGH = 2;   // ★★★
 
     // 優先順位を文字列で取得
-    public function getPriorityLabelAttribute()
+    public function getPriorityLabelAttribute() // このメソッドはpriority 属性に基づいて優先順位のラベルを文字列として取得するためのアクセサ
     {
         switch ($this->priority) {
             case self::PRIORITY_LOW:
